@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,7 +24,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//todo Long Apilarri birlashtirish kere
+    private Long id;
 
     @Column(nullable = false)
     private String username;

@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "purchases") // todo s keremas
+@Table(name = "purchase")
 @Getter
 @Setter
 @NoArgsConstructor

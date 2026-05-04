@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import uz.hojiakbar.repository.UserRepository;
 
 
-@Service // Mana shu annotatsiya JwtFilter-dagi "qizil" xatoni yo'qotadi
+@Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -16,7 +16,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Ma'lumotlar bazasidan foydalanuvchini username orqali qidiramiz
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Foydalanuvchi topilmadi: " + username));
     }
