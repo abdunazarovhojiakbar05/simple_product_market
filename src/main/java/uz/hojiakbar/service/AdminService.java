@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import uz.hojiakbar.dto.request.ProductRequestDto;
 import uz.hojiakbar.dto.response.ProductResponseDto;
 
-import java.util.List;
 
 public interface AdminService {
 

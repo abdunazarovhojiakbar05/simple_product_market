@@ -36,7 +36,6 @@
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
             String authHeader = request.getHeader("Authorization");
 
-            // Faqat token borligida va format to'g'ri bo'lganda tekshiramiz
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);
                 String username = jwtUtil.getUsernameFromToken(token);
@@ -51,7 +50,6 @@
                     }
                 }
             }
-            // Har qanday holatda faqat BIR MARTA chaqirilishi shart
             filterChain.doFilter(request, response);
         }
     }

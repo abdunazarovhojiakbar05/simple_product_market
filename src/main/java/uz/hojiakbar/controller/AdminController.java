@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import uz.hojiakbar.dto.request.ProductRequestDto;
 import uz.hojiakbar.dto.response.ProductResponseDto;
 import uz.hojiakbar.dto.response.UserResponseDto;
-import uz.hojiakbar.model.User;
 import uz.hojiakbar.service.AdminService;
 import uz.hojiakbar.service.ProductService;
 import uz.hojiakbar.service.UserService;

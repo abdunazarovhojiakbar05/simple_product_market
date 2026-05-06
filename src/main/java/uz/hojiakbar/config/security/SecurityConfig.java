@@ -30,8 +30,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Lambda ko'rinishida yozish tavsiya etiladi
-                .cors(cors -> cors.disable()) // CORS muammosi bo'lsa buni ham qo'shing
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/api/v1/auth/login").permitAll()
                         .anyRequest().authenticated()
