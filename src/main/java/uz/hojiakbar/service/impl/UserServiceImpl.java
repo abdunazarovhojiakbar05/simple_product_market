@@ -2,6 +2,7 @@ package uz.hojiakbar.service.impl;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.hojiakbar.repository.UserRepository;
 import uz.hojiakbar.dto.request.UserRequestDto;
@@ -20,11 +21,14 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDto createUser(UserRequestDto dto) {
         User user = UserMapper.toEntity(dto);
 
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
         User saved = userRepository.save(user);
 
         return UserMapper.toResponseDto(saved);

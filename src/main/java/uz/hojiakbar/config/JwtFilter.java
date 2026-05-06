@@ -34,33 +34,24 @@
          */
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+            String authHeader = request.getHeader("Authorization");
 
-             String authHeader = request.getHeader("Authorization");
-            String token = null;
-            String username = null;
+            // Faqat token borligida va format to'g'ri bo'lganda tekshiramiz
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                String username = jwtUtil.getUsernameFromToken(token);
 
-
-            if (request.getServletPath().contains("/api/v1/auth")) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-             if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                token = authHeader.substring(7);
-                username = jwtUtil.getUsernameFromToken(token);
-            }
-
-             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                 if (jwtUtil.validateToken(token)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    if (jwtUtil.validateToken(token)) {
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
                 }
             }
-             filterChain.doFilter(request, response);
+            // Har qanday holatda faqat BIR MARTA chaqirilishi shart
+            filterChain.doFilter(request, response);
         }
     }
