@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import uz.hojiakbar.config.JwtFilter;
+import uz.hojiakbar.enums.UserRole;
 
 @Configuration
 @EnableWebSecurity
@@ -27,24 +28,33 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final UserDetailsService userDetailsService;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/api/v1/auth/login").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    @Configuration
+    @EnableWebSecurity
+    @RequiredArgsConstructor
+    public static class securityConfig {
 
-        return http.build();
+        private final JwtFilter jwtFilter;
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+            http
+                    .csrf(csrf -> csrf.disable())
+                    .authorizeHttpRequests(auth -> auth
+                             .requestMatchers("/api/v1/auth/**").permitAll()
+
+                             .requestMatchers("/api/users/**", "/api/v1/admin/**").hasRole(UserRole.ADMIN.name())
+
+
+                             .requestMatchers("/api/v1/purchase/**", "/api/v1/user/**").hasRole(UserRole.USER.name())
+
+                             .anyRequest().authenticated()
+                    )
+                    .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+            return http.build();
+        }
     }
-
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

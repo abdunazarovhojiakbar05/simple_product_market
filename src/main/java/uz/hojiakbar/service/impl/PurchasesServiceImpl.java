@@ -2,7 +2,9 @@ package uz.hojiakbar.service.impl;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uz.hojiakbar.exception.ResourceNotFoundException;
 import uz.hojiakbar.repository.ProductRepository;
 import uz.hojiakbar.repository.PurchasesRepository;
 import uz.hojiakbar.repository.UserRepository;
@@ -15,6 +17,7 @@ import uz.hojiakbar.service.ProductService;
 import uz.hojiakbar.service.PurchasesService;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,9 +46,21 @@ public class PurchasesServiceImpl implements PurchasesService {
         Product product  = productRepository.findById(requestDto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
+        if(user.getBalance() < product.getPrice()){
+            throw new ResourceNotFoundException("Insufficient balance");
+        }
 
-             if(product.getQuantity() <= 0){
-                 throw new RuntimeException("Product is out of stock");
+        user.setBalance(user.getBalance() - product.getPrice());
+
+          var admin = userRepository.findByUsername("admin");
+        admin.ifPresent(value -> value.setBalance(value.getBalance() + product.getPrice()));
+
+        userRepository.save(user);
+        admin.ifPresent(userRepository::save);
+
+
+        if(product.getQuantity() <= 0){
+            throw new ResourceNotFoundException("Product not found");
              }
 
              product.setQuantity(product.getQuantity() - 1);
@@ -64,5 +79,8 @@ public class PurchasesServiceImpl implements PurchasesService {
                    purchases.getUser().getId(),
                    purchases.getPrice(),
                    purchases.getPurchaseDate());
+
+
+
     }
 }

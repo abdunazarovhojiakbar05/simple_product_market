@@ -50,41 +50,31 @@ public class User implements UserDetails {
         this.balance = 0.0;
     }
 
-    /**
-     * @return
-     */
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
-    /**
-     * @return
-     */
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    /**
-     * @return
-     */
+
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    /**
-     * @return
-     */
+
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    /**
-     * @return
-     */
+
     @Override
     public boolean isEnabled() {
         return true;
